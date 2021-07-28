@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { animals } = require('./data/animals.json');
+const exp = require('constants');
 
 
 const PORT = process.env.PORT || 3001;
@@ -12,8 +13,11 @@ const app = express();
 app.use(express.urlencoded({extended: true}));
 
 // parse incoming JSON data
-
 app.use(express.json());
+
+// allows us to access the assets in the public folder without creating a specific endpoint for it
+app.use(express.static('public'));
+
 
 
 // function to filter out the animal array by query 
@@ -119,6 +123,17 @@ app.post('/api/animals', (req, res) => {
     }
 });
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
 
 app.listen(PORT , () => {
     console.log(`API server now on port ${PORT}`);
